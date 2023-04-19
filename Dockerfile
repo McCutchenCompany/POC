@@ -1,15 +1,29 @@
-FROM ubuntu:latest
-RUN apt-get update && \
-    apt-get install libcrypt1 \
-    apt-get install -y chromium-browser squid && \
-    useradd -ms /bin/bash chromeuser && \
-    mkdir -p /home/chromeuser/Downloads && \
-    chown -R chromeuser:chromeuser /home/chromeuser
+FROM ubuntu:20.04
 
-COPY squid.conf /etc/squid/
-RUN chown proxy:proxy /etc/squid/squid.conf
-USER chromeuser
-WORKDIR /home/chromeuser
-COPY startup.sh .
-RUN chmod +x startup.sh
-ENTRYPOINT ["./startup.sh"]
+# Install necessary packages
+RUN apt-get update && \
+    apt-get install -y \
+    git \
+    wget \
+    xvfb \
+    x11vnc \
+    fluxbox \
+    supervisor \
+    net-tools \
+    firefox \
+    openssl \
+    ca-certificates
+
+# Copy the necessary files into the container
+COPY guacamole.properties /etc/guacamole/
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY startup.sh /startup.sh
+
+# Set the permissions of startup.sh
+RUN chmod +x /startup.sh
+
+# Expose the necessary ports
+EXPOSE 8080 5901
+
+# Start Guacamole and VNC servers when the container starts
+CMD ["/startup.sh"]
