@@ -1,5 +1,6 @@
 FROM ubuntu:latest
 RUN apt-get update && \
+    apt-get install libcrypt1 \
     apt-get install -y chromium-browser squid && \
     useradd -ms /bin/bash chromeuser && \
     mkdir -p /home/chromeuser/Downloads && \
