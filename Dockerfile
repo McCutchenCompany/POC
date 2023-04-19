@@ -1,8 +1,8 @@
 FROM ubuntu:20.04
 
 # Install necessary packages
-RUN apt-get update && \
-    apt-get install -y \
+RUN sudo apt-get update && \
+    sudo apt-get install -y \
     git \
     wget \
     xvfb \
