@@ -1,8 +1,11 @@
-# Use a base image with Chrome and Guacamole pre-installed
+# Use a base image with Guacamole pre-installed
 FROM oznu/guacamole
 
-# Install Chrome browser
-RUN apt-get update && apt-get install -y chromium-browser
+# Install Google Chrome browser
+RUN apt-get update && apt-get install -y wget gnupg
+RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add -
+RUN echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list
+RUN apt-get update && apt-get install -y google-chrome-stable
 
 # Configure Guacamole to use Chrome
 RUN echo 'user-mapping:disabled:disabled' >> /etc/guacamole/guacamole.properties
@@ -20,4 +23,4 @@ RUN echo 'enable-printing=true' >> /etc/guacamole/guacamole.properties
 EXPOSE 8080 3389
 
 # Start Guacamole and Chrome
-CMD ["sh", "-c", "/usr/local/bin/guacd -b 0.0.0.0 && chromium-browser --no-sandbox --disable-setuid-sandbox --disable-gpu --remote-debugging-port=9222 https://auth.wyze.com/login"]
+CMD ["sh", "-c", "/usr/local/bin/guacd -b 0.0.0.0 && google-chrome-stable --no-sandbox --disable-setuid-sandbox --disable-gpu --remote-debugging-port=9222 https://auth.wyze.com/login"]
